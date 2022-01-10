@@ -1,0 +1,29 @@
+[common]
+project_name = "deplo-images"
+
+# release target branch settings
+[common.release_targets]
+release = { type = "Branch", path = "main" }
+
+[vcs]
+type = "Github"
+email = "${SUNTOMI_VCS_ACCOUNT_EMAIL}"
+account = "${SUNTOMI_VCS_ACCOUNT}"
+key = "${SUNTOMI_VCS_ACCOUNT_KEY}"
+
+[ci.accounts.default]
+type = "GhAction"
+account = "${SUNTOMI_VCS_ACCOUNT}"
+key = "${SUNTOMI_VCS_ACCOUNT_KEY}"
+
+[ci.workflow.integrate]
+# no intagration jobs here
+
+[ci.workflow.deploy.aws]
+patterns = ["aws/Dockerfile"]
+runner = { type = "Machine", os = "Linux", local_fallback = { image = "docker:20.10", shell = "sh" } }
+command = """
+docker build -t ghcr.io/suntomi/images:aws -f aws/Dockerfile aws
+echo ${SUNTOMI_VCS_ACCOUNT_KEY} | docker login ghcr.io -u ${SUNTOMI_VCS_ACCOUNT} --password-stdin
+docker push ghcr.io/suntomi/images/aws
+"""

@@ -1,0 +1,82 @@
+name: Deplo CI/CD
+
+on: 
+  push:
+    branches: ["main"]
+  
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+    inputs:
+      deplo_job_name:
+        description: The name of the job to run
+        requred: true
+env:
+  DEPLO_CI_PULL_REQUEST_URL: ${{ github.event.pull_request.url }}
+  DEPLO_CI_RUN_JOB_NAME: ${{ github.event.inputs.deplo_job_name }}
+  SUNTOMI_VCS_ACCOUNT: ${{ secrets.SUNTOMI_VCS_ACCOUNT }}
+  SUNTOMI_VCS_ACCOUNT_EMAIL: ${{ secrets.SUNTOMI_VCS_ACCOUNT_EMAIL }}
+  SUNTOMI_VCS_ACCOUNT_KEY: ${{ secrets.SUNTOMI_VCS_ACCOUNT_KEY }}
+jobs:
+  deplo-main:
+    name: Start CI
+    runs-on: ubuntu-latest
+    outputs:
+      DEPLO_OUTPUT_CLI_VERSION: ${{ steps.deplo-ci-kick.outputs.DEPLO_OUTPUT_CLI_VERSION }}
+      deploy-aws: ${{ steps.deplo-ci-kick.outputs.deploy-aws }}
+    steps:
+      - name: Fetch deplo cli
+        run: |
+          curl -L https://github.com/suntomi/deplo/releases/download/0.1.4/deplo-Linux -o /usr/local/bin/deplo
+          chmod +x /usr/local/bin/deplo
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+      - name: Start deplo
+        id: deplo-ci-kick
+        run: deplo ci kick
+      - name: Setup ssh session to debug
+        if: ${{ failure() }}
+        uses: umegaya/action-tmate@a3d459813f3429bd95fc48bcd980b2fb40f10ad0
+        with:
+          sudo: true
+  deplo-finish:
+    name: Cleanup CI
+    if: ${{ !failure() && (needs.deploy-aws.outputs.need-cleanup) }}
+    needs: ["deplo-main","deploy-aws"]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch deplo cli
+        run: |
+          curl -L https://github.com/suntomi/deplo/releases/download/0.1.4/deplo-Linux -o /usr/local/bin/deplo
+          chmod +x /usr/local/bin/deplo
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+      - name: Cleanup deplo
+        id: deplo-ci-fin
+        run: deplo ci fin
+
+  deploy-aws:
+    needs: [deplo-main]
+    if: ${{ needs.deplo-main.outputs.deploy-aws && !failure() }}
+    name: Running job deploy-aws
+    runs-on: ubuntu-latest
+  
+    outputs:
+      need-cleanup: ${{ steps.deplo-deploy-aws.outputs.need-cleanup }}
+    steps:
+      - name: Fetch deplo cli
+        run: |
+          curl -L https://github.com/suntomi/deplo/releases/download/0.1.4/deplo-Linux -o /usr/local/bin/deplo
+          chmod +x /usr/local/bin/deplo
+      - name: Checkout
+        uses: actions/checkout@v2
+      
+  
+      - name: deploy aws
+        id: deplo-deploy-aws
+        run: deplo ci deploy aws
+  
