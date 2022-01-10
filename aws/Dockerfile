@@ -18,6 +18,7 @@ COPY --from=installer /usr/local/aws-cli/ /usr/local/aws-cli/
 COPY --from=installer /aws-cli-bin/ /usr/local/bin/
 COPY --from=installer terraform /usr/bin/
 RUN yum install -y jq \
-  && yum clean all
+  && yum clean all \
+  && amazon-linux-extras install docker
 
 ENTRYPOINT ["/bin/sh"]

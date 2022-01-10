@@ -25,5 +25,5 @@ runner = { type = "Machine", os = "Linux", local_fallback = { image = "docker:20
 command = """
 docker build -t ghcr.io/suntomi/images:aws -f aws/Dockerfile aws
 echo ${SUNTOMI_VCS_ACCOUNT_KEY} | docker login ghcr.io -u ${SUNTOMI_VCS_ACCOUNT} --password-stdin
-docker push ghcr.io/suntomi/images/aws
+docker push ghcr.io/suntomi/images:aws
 """
