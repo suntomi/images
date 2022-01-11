@@ -1,5 +1,5 @@
 FROM amazonlinux:2 as installer
-ENV TERRAFORM_VERSION 1.1.3
+ENV TERRAFORM_VERSION 1.1.2
 RUN yum update -y \
   && yum install -y unzip \
   && curl https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o awscli-exe-linux-x86_64.zip \
@@ -17,7 +17,7 @@ FROM amazonlinux:2
 COPY --from=installer /usr/local/aws-cli/ /usr/local/aws-cli/
 COPY --from=installer /aws-cli-bin/ /usr/local/bin/
 COPY --from=installer terraform /usr/bin/
-RUN yum install -y jq \
+RUN yum install -y jq git \
   && yum clean all \
   && amazon-linux-extras install docker
 
