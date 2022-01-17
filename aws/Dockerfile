@@ -20,5 +20,9 @@ COPY --from=installer terraform /usr/bin/
 RUN yum install -y jq git \
   && yum clean all \
   && amazon-linux-extras install docker
+ENV YQ_VERSION v4.16.2
+ENV YQ_BINARY yq_linux_amd64
+RUN curl -v -L -o /tmp/yq https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/${YQ_BINARY} \
+  && mv /tmp/yq /usr/bin/yq && chmod +x /usr/bin/yq
 
 ENTRYPOINT ["/bin/sh"]
