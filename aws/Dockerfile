@@ -24,5 +24,7 @@ ENV YQ_VERSION v4.16.2
 ENV YQ_BINARY yq_linux_amd64
 RUN curl -v -L -o /tmp/yq https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/${YQ_BINARY} \
   && mv /tmp/yq /usr/bin/yq && chmod +x /usr/bin/yq
+RUN curl -L https://github.com/docker/compose/releases/download/1.16.1/docker-compose-`uname -s`-`uname -m` \
+  -o /usr/local/bin/docker-compose && chmod +x /usr/local/bin/docker-compose
 
 ENTRYPOINT ["/bin/sh"]
