@@ -3,7 +3,7 @@ project_name = "deplo-images"
 
 # release target branch settings
 [common.release_targets]
-release = { type = "Branch", path = "main" }
+release = { type = "Branch", patterns = ["main"] }
 
 [vcs]
 type = "Github"
@@ -16,10 +16,10 @@ type = "GhAction"
 account = "${SUNTOMI_VCS_ACCOUNT}"
 key = "${SUNTOMI_VCS_ACCOUNT_KEY}"
 
-[ci.workflow.integrate]
+[jobs.integrate]
 # no intagration jobs here
 
-[ci.workflow.deploy.aws]
+[jobs.deploy.aws]
 patterns = ["aws/Dockerfile"]
 runner = { type = "Machine", os = "Linux", local_fallback = { image = "docker:20.10", shell = "sh" } }
 command = """
