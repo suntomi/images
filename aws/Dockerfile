@@ -26,5 +26,7 @@ RUN curl -v -L -o /tmp/yq https://github.com/mikefarah/yq/releases/download/${YQ
   && mv /tmp/yq /usr/bin/yq && chmod +x /usr/bin/yq
 RUN curl -L https://github.com/docker/compose/releases/download/1.16.1/docker-compose-`uname -s`-`uname -m` \
   -o /usr/local/bin/docker-compose && chmod +x /usr/local/bin/docker-compose
+RUN curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl" && \
+    chmod +x ./kubectl && mv ./kubectl /usr/local/bin/kubectl
 
 ENTRYPOINT ["/bin/sh"]
