@@ -17,7 +17,7 @@ FROM amazonlinux:2
 COPY --from=installer /usr/local/aws-cli/ /usr/local/aws-cli/
 COPY --from=installer /aws-cli-bin/ /usr/local/bin/
 COPY --from=installer terraform /usr/bin/
-RUN yum install -y jq git \
+RUN yum install -y jq git tar \
   && yum clean all \
   && amazon-linux-extras install docker
 ENV YQ_VERSION v4.16.2
@@ -28,5 +28,6 @@ RUN curl -L https://github.com/docker/compose/releases/download/1.16.1/docker-co
   -o /usr/local/bin/docker-compose && chmod +x /usr/local/bin/docker-compose
 RUN curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl" && \
     chmod +x ./kubectl && mv ./kubectl /usr/local/bin/kubectl
+RUN cd /usr/local/bin && curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
 
 ENTRYPOINT ["/bin/sh"]
