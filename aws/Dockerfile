@@ -1,5 +1,5 @@
 FROM amazonlinux:2 as installer
-ENV TERRAFORM_VERSION 1.3.6
+ENV TERRAFORM_VERSION 1.4.2
 RUN yum update -y \
   && yum install -y unzip \
   && curl https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o awscli-exe-linux-x86_64.zip \
