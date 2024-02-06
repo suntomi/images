@@ -27,7 +27,6 @@ key = "${SUNTOMI_VCS_ACCOUNT_KEY}"
 on = { changed = ["aws/Dockerfile"] }
 runner = { type = "machine", os = "linux", local_fallback = { image = "docker:25.0.1", shell = "sh" } }
 command = """
-docker buildx build --platform linux/amd64,linux/arm64 -t ghcr.io/suntomi/images:aws -f aws/Dockerfile aws
 echo ${SUNTOMI_VCS_ACCOUNT_KEY} | docker login ghcr.io -u ${SUNTOMI_VCS_ACCOUNT} --password-stdin
-docker push ghcr.io/suntomi/images:aws
+docker buildx build --push --platform linux/amd64,linux/arm64 -t ghcr.io/suntomi/images:aws -f aws/Dockerfile aws
 """

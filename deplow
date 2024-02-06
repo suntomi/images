@@ -5,9 +5,13 @@ if [[ "${OS}" =~ ^MINGW.*|^MSYS.*|^CYGWIN.* ]]; then
     DEPLO_BIN_PATH_POSTFIX="Windows.exe"
     OS="Windows"
 else
-    DEPLO_BIN_PATH_POSTFIX="${OS}"
+    if [[ "${OS}" == "Linux" ]]; then
+        DEPLO_BIN_PATH_POSTFIX="${OS}-$(uname -m)"
+    else
+        DEPLO_BIN_PATH_POSTFIX="${OS}"
+    fi
 fi
-DEPLO_VERSION=0.2.11
+DEPLO_VERSION=0.3.0
 DEPLO_CLI_DIR="${CWD}/.deplo/cli/${DEPLO_VERSION}/${OS}"
 DEPLO_CLI_BIN="${DEPLO_CLI_DIR}/deplo"
 
