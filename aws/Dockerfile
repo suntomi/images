@@ -1,5 +1,5 @@
 FROM amazonlinux:2 as installer
-ENV TERRAFORM_VERSION 1.7.2
+ENV TERRAFORM_VERSION 1.9.7
 RUN yum update -y \
   && yum install -y unzip \
   && curl https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o awscli-exe-linux-x86_64.zip \
@@ -20,7 +20,7 @@ COPY --from=installer terraform /usr/bin/
 RUN yum install -y jq git tar \
   && yum clean all \
   && amazon-linux-extras install docker
-ENV YQ_VERSION v4.16.2
+ENV YQ_VERSION v4.44.3
 ENV YQ_BINARY yq_linux_amd64
 RUN curl -v -L -o /tmp/yq https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/${YQ_BINARY} \
   && mv /tmp/yq /usr/bin/yq && chmod +x /usr/bin/yq
